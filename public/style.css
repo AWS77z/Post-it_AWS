@@ -1,0 +1,100 @@
+body{
+    background-color: gray;
+    
+}
+
+#main{
+    height: 100vh;
+    width: 100%;
+}
+
+#center{
+    width: 100%;
+    text-align: center;
+   
+}
+.centrer{
+    display: flex;
+    justify-content: center; /* horizontal */
+    align-items: center;     /* vertical */
+   
+}
+
+.btn{
+    width: 500px;
+    height: 100px;
+    margin: 4px;
+    background-color: red;
+}
+
+
+/* Carte */
+.container {
+    
+    background: white;
+    padding: 30px;
+    width: 320px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Titre */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Inputs */
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 8px;
+    background: #f1f1f1;
+    transition: 0.3s;
+    font-size: 14px;
+}
+
+input:focus {
+    outline: none;
+    background: #e0e7ff;
+    box-shadow: 0 0 0 2px #667eea;
+}
+
+/* Bouton */
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

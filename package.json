@@ -1,0 +1,25 @@
+{
+  "name": "projet-blocnote",
+  "version": "1.0.0",
+  "description": "",
+  "main": "serveur.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.2",
+    "consolidate": "^1.0.4",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "knex": "^3.2.9",
+    "nunjucks": "^3.2.4",
+    "session": "^0.1.0",
+    "sqlite3": "^6.0.1"
+  }
+}
