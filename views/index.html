@@ -8,7 +8,24 @@
     <link rel="stylesheet" href="/style.css">
 </head> 
 <body>
+    <header>  
+    {% if user %}
     <a href="/deconnexion">Se déconnecter</a>
+    {% else %}
+    <div id="center">
+        <form action="/inscription">
+            <input class="btn" type="submit" value="Inscription">
+        </form>
+
+        <form action="/connexion">
+            <input class="btn" type="submit" value="Connexion">
+        </form>
+    </div>
+    {% endif %}
+    
+
+</header>
+    
     <div id="main">
 
        <div id="sous">

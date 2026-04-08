@@ -32,6 +32,11 @@ app.use(session({
     saveUninitialized: false
 }));
 
+app.use((req, res, next)=>{
+    res.locals.user= req.session.user || null;
+    next();});
+
+
 function connecte(req, res, next) {
     if (req.session.user) {
         next();
@@ -44,12 +49,7 @@ function connecte(req, res, next) {
 app.set('view engine', 'html');
 
 app.get('/', (req, res) => {
-    return res.render('acceuil.html');
-});
-
-app.get('/blocknote',connecte, (req, res) => {
     return res.render('index.html');
-
 });
 
 app.get('/inscription', (req, res) => {
@@ -86,7 +86,7 @@ app.post('/verif_inscription', (req, res) => {
                         nom: req.body.nom
                     };
 
-                        return res.redirect('/blocknote');
+                        return res.redirect('/');
                     });
             }
         })
@@ -121,7 +121,7 @@ app.post('/verif_connexion', (req, res) => {
                         nom: user.nom
                     };
 
-                    return res.redirect('/blocknote');
+                    return res.redirect('/');
                 });
         })
         .catch(err => {
@@ -141,7 +141,9 @@ app.get('/deconnexion', connecte, (req, res) => {
         return res.redirect('/');}
     });
 });
+app.get('/ajouter_post-it', connecte, (req, res) => {
 
+});
 
 const PORT = 3000;
 app.listen(PORT, () => {
