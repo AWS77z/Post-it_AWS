@@ -1,5 +1,6 @@
 body{
-    background-color: gray;
+    margin: 0;
+    background-color: rgb(244, 163, 163);
     
 }
 
@@ -8,25 +9,13 @@ body{
     width: 100%;
 }
 
-#center{
-    width: 100%;
-    text-align: center;
-   
-}
+
 .centrer{
     display: flex;
     justify-content: center; /* horizontal */
     align-items: center;     /* vertical */
    
 }
-
-.btn{
-    width: 500px;
-    height: 100px;
-    margin: 4px;
-    background-color: red;
-}
-
 
 /* Carte */
 .container {
@@ -57,11 +46,22 @@ input {
     transition: 0.3s;
     font-size: 14px;
 }
+header{
+    height: 80px;
+    display: flex;
+    align-items: center;     /* vertical */
+    gap: 10px;
+    background-color: rgb(140, 84, 84);
+    
+}
+header input{
+    margin: 20px;    
+}
 
 input:focus {
     outline: none;
     background: #e0e7ff;
-    box-shadow: 0 0 0 2px #667eea;
+    box-shadow: 0 0 0 2px rgb(255, 8, 144);;
 }
 
 /* Bouton */
@@ -71,7 +71,7 @@ button {
     margin-top: 10px;
     border: none;
     border-radius: 8px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, rgb(244, 110, 110), rgb(234, 124, 223));
     color: white;
     font-size: 16px;
     cursor: pointer;
