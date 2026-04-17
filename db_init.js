@@ -14,6 +14,7 @@ if (process.env.DATABASE_URL) {
         useNullAsDefault: true,
     };
 }
+const knex = require('knex')(knexConfig);
 
 async function initDB() {
     try {
