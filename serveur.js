@@ -25,8 +25,10 @@ if (process.env.DATABASE_URL) {
         useNullAsDefault: true,
     };
 }
+const knex = require('knex')(knexConfig);
 
 const app = express();
+app.set('trust proxy', 1);
 const server = http.createServer(app);
 const io = new Server(server);
 
@@ -36,7 +38,15 @@ app.use(bodyP.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'mon_secret_local',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: true,
+        sameSite: 'none'
+    }
+}));
 nunjucks.configure(path.join(__dirname, 'views'), {
     autoescape: true,
     express: app
