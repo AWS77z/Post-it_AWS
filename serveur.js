@@ -1,4 +1,3 @@
-require('./db_init.js');
 const express = require('express');
 const bodyP = require('body-parser');
 const cookieParser = require("cookie-parser");
@@ -11,14 +10,12 @@ const { Server } = require("socket.io");
 
 
 const knex = require('knex')({
-  client: 'pg',
-  connection: {
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }, 
-  },
-  pool: { min: 2, max: 10 }
-});
-
+    client: 'sqlite3',
+    connection: {
+        filename: "./db.sqlite3"
+    },
+    useNullAsDefault: true,
+})
 
 const app = express();
 const server = http.createServer(app);
@@ -42,9 +39,10 @@ app.use(session({
     saveUninitialized: false
 }));
 
-app.use((req, res, next)=>{
-    res.locals.user= req.session.user || null;
-    next();});
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    next();
+});
 
 
 function connecte(req, res, next) {
@@ -112,16 +110,16 @@ app.post('/verif_inscription', async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(mot_de_passe, 10);
 
-        const [id]= await knex('users').insert({
+        const [id] = await knex('users').insert({
             email: mail,
             nom: req.body.nom,
             prenom: req.body.prenom,
-            pseudo:req.body.pseudo,
+            pseudo: req.body.pseudo,
             password: hashedPassword
         });
 
         req.session.user = {
-            pseudo:req.body.pseudo,
+            pseudo: req.body.pseudo,
             id: id
         };
 
@@ -175,9 +173,10 @@ app.get('/deconnexion', connecte, (req, res) => {
             console.error(err);
             return res.redirect('/blocknote');
         }
-        else{
-        res.clearCookie('connect.sid'); 
-        return res.redirect('/');}
+        else {
+            res.clearCookie('connect.sid');
+            return res.redirect('/');
+        }
     });
 });
 
@@ -191,12 +190,12 @@ app.get('/verif_connecte', (req, res) => {
 
 
 app.post('/sauvegarde_post-it', connecte, verif_permission('creer'), async (req, res) => {
-    
+
     console.log(req.body);
-     const { x, y, contenu } = req.body;
-     if (!x || !y || !contenu ){
+    const { x, y, contenu } = req.body;
+    if (!x || !y || !contenu) {
         return res.redirect('/?error=9')
-     }
+    }
     try {
         const [id] = await knex('postits').insert({
             contenu: contenu,
@@ -214,22 +213,22 @@ app.post('/sauvegarde_post-it', connecte, verif_permission('creer'), async (req,
             position_y: y,
         };
 
-    io.emit("new-postit", postit);
-    return res.sendStatus(200);
-        
+        io.emit("new-postit", postit);
+        return res.sendStatus(200);
+
     } catch (err) {
         console.error(err);
         return res.status(500).send("Erreur serveur");
     }
 });
 
-app.get('/afficher_postits_bd',  async (req, res) => {
+app.get('/afficher_postits_bd', async (req, res) => {
     try {
         const postits = await knex('postits').join('users', 'postits.auteur', 'users.id')
-    .select(
-        'postits.*',
-        'users.pseudo as auteur'
-    ).orderBy('postits.date', 'asc');
+            .select(
+                'postits.*',
+                'users.pseudo as auteur'
+            ).orderBy('postits.date', 'asc');
         res.json(postits);
     } catch (err) {
         console.error(err);
@@ -248,19 +247,20 @@ app.delete('/delete_postit/:id', connecte, verif_permission('supprimer'), async 
             return res.status(404).send("Post-it introuvable");
         }
         const user_mtn = await knex('users').where({ id: user_Id }).first();
-        if(!user_mtn.admin){
-            if (Number(postit.auteur) !== Number(user_Id)){ 
-            console.log(postit.auteur)
-            console.log(req.session.user.id)
+        if (!user_mtn.admin) {
+            if (Number(postit.auteur) !== Number(user_Id)) {
+                console.log(postit.auteur)
+                console.log(req.session.user.id)
 
-            return res.status(403).send("Non autorisé");}
+                return res.status(403).send("Non autorisé");
+            }
         }
 
         await knex('postits')
             .where({ id: req.params.id })
             .del();
-            console.log("DELETE ID:", req.params.id);
-        io.emit("delete-postit", req.params.id); 
+        console.log("DELETE ID:", req.params.id);
+        io.emit("delete-postit", req.params.id);
 
         res.sendStatus(200);
     } catch (err) {
@@ -278,31 +278,31 @@ app.put('/update_postit/:id', connecte, verif_permission('modifier'), async (req
         const postit_existant = await knex('postits').where({ id: postit_Id }).first();
 
         if (!postit_existant) return res.status(404).send("Introuvable");
-         const user_mtn = await knex('users').where({ id: user_Id }).first();
-        if(!user_mtn.admin){
+        const user_mtn = await knex('users').where({ id: user_Id }).first();
+        if (!user_mtn.admin) {
             if (Number(postit_existant.auteur) !== Number(user_Id)) return res.status(403).send("Non autorisé");
         }
-        
+
 
 
         const nouvelleDate = new Date();
 
         await knex('postits')
             .where({ id: postit_Id })
-            .update({ 
+            .update({
                 contenu: contenu,
-                date: nouvelleDate 
+                date: nouvelleDate
             });
-            const nouvelle_postit = {
-            id:postit_Id,
+        const nouvelle_postit = {
+            id: postit_Id,
             contenu: contenu,
-            date: nouvelleDate ,
+            date: nouvelleDate,
             auteur: req.session.user.pseudo,
             position_x: postit_existant.position_x,
             position_y: postit_existant.position_y,
         };
         io.emit("update-postit", nouvelle_postit);
-    return res.sendStatus(200);
+        return res.sendStatus(200);
 
     } catch (err) {
         console.error(err);
@@ -312,7 +312,7 @@ app.put('/update_postit/:id', connecte, verif_permission('modifier'), async (req
 
 app.get('/admin', connecte, verif_permission('admin'), async (req, res) => {
     try {
-        
+
         const utilisateurs = await knex('users').select('*').orderBy('pseudo', 'asc');
         res.render('admin.html', { utilisateurs });
     } catch (err) {
@@ -333,8 +333,8 @@ app.post('/admin/update_permission', connecte, verif_permission('admin'), async 
     try {
         await knex('users')
             .where({ id: userId })
-            .update({ 
-                [colonne]: valeur ? 1 : 0  
+            .update({
+                [colonne]: valeur ? 1 : 0
             });
         res.sendStatus(200);
     } catch (err) {
@@ -343,6 +343,39 @@ app.post('/admin/update_permission', connecte, verif_permission('admin'), async 
     }
 });
 
+app.put('/update_position/:id', connecte, async (req, res) => {
+    try {
+        const { x, y } = req.body;
+        const postit_Id = req.params.id;
+        const user_Id = req.session.user.id;
+
+        const postit = await knex('postits').where({ id: postit_Id }).first();
+
+        if (!postit) return res.status(404).send("Introuvable");
+
+        const user = await knex('users').where({ id: user_Id }).first();
+        if (!user.admin && Number(postit.auteur) !== Number(user_Id)) {
+            return res.status(403).send("Ce n'est pas ton post-it !");
+        }
+
+        const nouvelleDate = new Date();
+
+        await knex('postits')
+            .where({ id: postit_Id })
+            .update({
+                position_x: Math.round(x),
+                position_y: Math.round(y),
+                date: nouvelleDate
+            });
+
+        io.emit("postit_bouge", { id: postit_Id, x, y, date: nouvelleDate });
+
+        res.sendStatus(200);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Erreur lors du déplacement");
+    }
+});
 const PORT = 3000;
 server.listen(PORT, () => {
     console.log(`Serveur démarré sur http://localhost:${PORT}`);

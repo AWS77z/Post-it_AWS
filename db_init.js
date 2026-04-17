@@ -1,10 +1,9 @@
 const knex = require('knex')({
-  client: 'pg',
-  connection: {
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }, 
-  },
-  pool: { min: 2, max: 10 }
+    client: 'sqlite3',
+    connection: {
+        filename: "./db.sqlite3"
+    },
+    useNullAsDefault: true,
 });
 
 async function initDB() {
@@ -50,7 +49,9 @@ async function initDB() {
 
     } catch (err) {
         console.error("Erreur :", err);
-    } 
+    } finally {
+        await knex.destroy();
+    }
 }
 
 initDB();
