@@ -59,9 +59,7 @@ async function initDB() {
 
     } catch (err) {
         console.error("Erreur :", err);
-    } finally {
-        await knex.destroy();
-    }
+    } 
 }
 
 initDB();
