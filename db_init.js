@@ -1,10 +1,19 @@
-const knex = require('knex')({
-    client: 'sqlite3',
-    connection: {
-        filename: "./db.sqlite3"
-    },
-    useNullAsDefault: true,
-});
+let knexConfig;
+if (process.env.DATABASE_URL) {
+    knexConfig = {
+        client: 'pg',
+        connection: {
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+        }
+    };
+} else {
+    knexConfig = {
+        client: 'sqlite3',
+        connection: { filename: "./db.sqlite3" },
+        useNullAsDefault: true,
+    };
+}
 
 async function initDB() {
     try {
@@ -38,7 +47,7 @@ async function initDB() {
                 table.increments('id').primary();
                 table.text('contenu').notNullable();
                 table.datetime('date').notNullable();
-                table.string('auteur').notNullable();
+                table.integer('auteur').notNullable();
                 table.integer('position_x').notNullable();
                 table.integer('position_y').notNullable();
             });

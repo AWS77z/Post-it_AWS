@@ -9,13 +9,22 @@ const http = require("http");
 const { Server } = require("socket.io");
 
 
-const knex = require('knex')({
-    client: 'sqlite3',
-    connection: {
-        filename: "./db.sqlite3"
-    },
-    useNullAsDefault: true,
-})
+let knexConfig;
+if (process.env.DATABASE_URL) {
+    knexConfig = {
+        client: 'pg',
+        connection: {
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+        }
+    };
+} else {
+    knexConfig = {
+        client: 'sqlite3',
+        connection: { filename: "./db.sqlite3" },
+        useNullAsDefault: true,
+    };
+}
 
 const app = express();
 const server = http.createServer(app);
