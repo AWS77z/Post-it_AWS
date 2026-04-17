@@ -1,30 +1,57 @@
 const knex = require('knex')({
-    client:'sqlite3',
+    client: 'sqlite3',
     connection: {
-      filename: "./db.sqlite3"
+        filename: "./db.sqlite3"
     },
     useNullAsDefault: true,
-})
-async function initDB(){
-    try{
-        const exists = await knex.schema.hasTable('users');
-        if(!exists){
-            await knex.schema.createTable('users', table =>{
-                table.string('email').primary();
+});
+
+async function initDB() {
+    try {
+
+        // USERS
+
+        const usersExists = await knex.schema.hasTable('users');
+        if (!usersExists) {
+            await knex.schema.createTable('users', table => {
+                table.increments('id').primary();
+                table.string('pseudo').unique().notNullable();
+                table.string('email').unique().notNullable();
                 table.string('nom').notNullable();
                 table.string('prenom').notNullable();
                 table.string('password').notNullable();
-                table.string('liste_post_it').notNullable();
-                console.log("Table users créée");
-            });}
-        else {
+                table.boolean('creer').defaultTo(true);
+                table.boolean('supprimer').defaultTo(true);
+                table.boolean('modifier').defaultTo(true);
+                table.boolean('admin').defaultTo(false);
+            });
+            console.log("Table users créée");
+        } else {
             console.log("Table users existe déjà");
-        }; }
-    catch (err) {
-        console.error(" Erreur : ",err);
+        }
+
+        // POSTITS
         
-    }finally{
+        const postitsExists = await knex.schema.hasTable('postits');
+        if (!postitsExists) {
+            await knex.schema.createTable('postits', table => {
+                table.increments('id').primary();
+                table.text('contenu').notNullable();
+                table.datetime('date').notNullable();
+                table.string('auteur').notNullable();
+                table.integer('position_x').notNullable();
+                table.integer('position_y').notNullable();
+            });
+            console.log("Table postits créée");
+        } else {
+            console.log("Table postits existe déjà");
+        }
+
+    } catch (err) {
+        console.error("Erreur :", err);
+    } finally {
         await knex.destroy();
     }
 }
+
 initDB();

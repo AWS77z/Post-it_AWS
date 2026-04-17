@@ -1,38 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
+    <!DOCTYPE html>
+    <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Application Web</title>
-    <link rel="stylesheet" href="/style.css">
-</head> 
-<body>
-    <header>  
-    {% if user %}
-    <a href="/deconnexion">Se déconnecter</a>
-    {% else %}
-    
-        <form action="/inscription">
-            <input class="btn" type="submit" value="Inscription">
-        </form>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>Application Web</title>
+        <link rel="stylesheet" href="/style.css">
+    </head> 
+    <body>
+        <header>  
+        {% if user %}
+        <a href="/deconnexion">Se déconnecter</a>
+        {% else %}
+        
+            <form action="/inscription">
+                <input class="btn" type="submit" value="Inscription">
+            </form>
 
-        <form action="/connexion">
-            <input class="btn" type="submit" value="Connexion">
-        </form>
-    {% endif %}
-    
+            <form action="/connexion">
+                <input class="btn" type="submit" value="Connexion">
+            </form>
+        {% endif %}
+        
 
-</header>
-    
-    <div id="main">
+    </header>
 
-       <div id="sous">
+        <div id="main">
+            {% if user %}
+            <div class="overlay">
+                <div class="popup">
+                    <form id ="Sauvegarder_Post-it" onsubmit="return Sauvegarder(event)">
+                        <label>Contenu :</label><br>
+                        <input id="x" type="hidden" name="x"  required>
+                        <input id="y" type="hidden" name="y"  required>
+                        <textarea name="contenu" required></textarea><br><br>
+                        <button type="submit">Enregistrer</button>
+                    </form>
+                    <button onclick="closePopup()"> Fermer</button>
+                </div>
+            {% endif %}
+            </div>
+        
+        </div>
 
-       </div> 
-       
-    </div>
-
-    <script src="/client.js"></script>
-</body>
-</html>
+        <script src="/socket.io/socket.io.js"></script>
+        <script> window.user = {{ user | default(null) | dump | safe }}; </script>
+        <script src="/client.js"></script>
+    </body>
+    </html>
