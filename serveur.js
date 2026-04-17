@@ -1,3 +1,4 @@
+require('./db_init.js');
 const express = require('express');
 const bodyP = require('body-parser');
 const cookieParser = require("cookie-parser");
