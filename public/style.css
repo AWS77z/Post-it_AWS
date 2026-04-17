@@ -18,7 +18,7 @@ body{
    
 }
 
-/* Carte */
+
 .container {
     
     background: white;
@@ -29,14 +29,14 @@ body{
     animation: fadeIn 0.6s ease-in-out;
 }
 
-/* Titre */
+
 h2 {
     text-align: center;
     margin-bottom: 20px;
     color: #333;
 }
 
-/* Inputs */
+
 input {
     width: 100%;
     padding: 12px;
@@ -65,7 +65,7 @@ input:focus {
     box-shadow: 0 0 0 2px rgb(255, 8, 144);;
 }
 
-/* Bouton */
+
 button {
     width: 100%;
     padding: 12px;
@@ -88,7 +88,7 @@ button:active {
     transform: scale(0.98);
 }
 
-/* Animation */
+
 @keyframes fadeIn {
     from {
         opacity: 0;

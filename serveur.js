@@ -11,8 +11,11 @@ const { Server } = require("socket.io");
 
 
 const knex = require('knex')({
-    client: 'pg',
-    connection: process.env.DATABASE_URL+ "?sslmode=require"
+  client: 'pg',
+  connection: {
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false } 
+  }
 });
 
 
