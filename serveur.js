@@ -52,11 +52,6 @@ nunjucks.configure(path.join(__dirname, 'views'), {
     express: app
 });
 
-app.use(session({
-    secret: 'mon_secret',
-    resave: false,
-    saveUninitialized: false
-}));
 
 app.use((req, res, next) => {
     res.locals.user = req.session.user || null;
