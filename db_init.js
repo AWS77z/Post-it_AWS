@@ -1,9 +1,6 @@
 const knex = require('knex')({
-    client: 'sqlite3',
-    connection: {
-        filename: "./db.sqlite3"
-    },
-    useNullAsDefault: true,
+    client: 'pg',
+    connection: process.env.DATABASE_URL+ "?sslmode=require"
 });
 
 async function initDB() {
@@ -31,7 +28,7 @@ async function initDB() {
         }
 
         // POSTITS
-        
+
         const postitsExists = await knex.schema.hasTable('postits');
         if (!postitsExists) {
             await knex.schema.createTable('postits', table => {
