@@ -65,9 +65,7 @@ const params = new URLSearchParams(window.location.search);
 if (params.get("error") === "9") {
     alert("Une Erreure est survenue lors de la creation du post it : un élément est manquant.");
 }
-if (params.get("error") === "password") {
-        document.getElementById("message_erreur").innerHTML="Mot de passe trop faible (8 caractères, majuscule, minuscule, chiffre, symbole requis";
-    }
+
 
 function creer_post_it(p) {
 

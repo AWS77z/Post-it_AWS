@@ -109,7 +109,7 @@ app.post('/verif_inscription', async (req, res) => {
     try {
         const { email, nom, prenom, pseudo, mot_de_passe } = req.body;
         if (!isStrongPassword(mot_de_passe)) {
-            return res.redirect('/inscription?error=password');
+            return res.redirect('/inscription?');
         }
 
 
