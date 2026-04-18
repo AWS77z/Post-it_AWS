@@ -279,7 +279,7 @@ function rendreDraggable(element) {
         }
     }
     socket.on("postit_bouge", (data) => {
-        const el = document.querySelector(`.post-it[data-id='${data.id}']`);
+        const el = document.querySelector(`.post_it[data-id='${data.id}']`);
         if (el) {
             el.style.left = data.x + "px";
             el.style.top = data.y + "px";

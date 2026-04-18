@@ -109,8 +109,8 @@ app.post('/verif_inscription', async (req, res) => {
     try {
         const { email, nom, prenom, pseudo, mot_de_passe } = req.body;
         if (!isStrongPassword(mot_de_passe)) {
-    return res.redirect('/inscription?error=password');
-}
+            return res.redirect('/inscription?error=password');
+        }
 
 
         if (!email || !nom || !prenom || !mot_de_passe || !pseudo) {
@@ -148,7 +148,7 @@ app.post('/verif_inscription', async (req, res) => {
         }).returning('id');
 
 
-const id = result[0]?.id || result[0];
+        const id = result[0]?.id || result[0];
 
         req.session.user = {
             pseudo: req.body.pseudo,
@@ -230,16 +230,16 @@ app.post('/sauvegarde_post-it', connecte, verif_permission('creer'), async (req,
     }
     try {
 
-const result = await knex('postits')
-    .insert({
-        contenu: contenu,
-        date: new Date(),
-        auteur: req.session.user.id,
-        position_x: x,
-        position_y: y
-    })
-    .returning('id');
-    const id = result[0]?.id || result[0];
+        const result = await knex('postits')
+            .insert({
+                contenu: contenu,
+                date: new Date(),
+                auteur: req.session.user.id,
+                position_x: x,
+                position_y: y
+            })
+            .returning('id');
+        const id = result[0]?.id || result[0];
         const postit = {
             id,
             contenu: contenu,
@@ -404,7 +404,12 @@ app.put('/update_position/:id', connecte, async (req, res) => {
                 date: nouvelleDate
             });
 
-        io.emit("postit_bouge", { id: postit_Id, x, y, date: nouvelleDate });
+        io.emit("postit_bouge", {
+            id: postit_Id,
+            x: Number(x),
+            y: Number(y),
+            date: nouvelleDate
+        });
 
         res.sendStatus(200);
     } catch (err) {
