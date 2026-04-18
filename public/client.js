@@ -288,3 +288,6 @@ function rendreDraggable(element) {
     });
 
 }
+if (params.get("error") === "password") {
+        alert("Mot de passe trop faible (8 caractères, majuscule, minuscule, chiffre, symbole requis)");
+    }

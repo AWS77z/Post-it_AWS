@@ -77,6 +77,21 @@ function verif_permission(colonne) {
     };
 }
 
+function isStrongPassword(password) {
+    const minLength = /.{8,}/;
+    const hasUpper = /[A-Z]/;
+    const hasLower = /[a-z]/;
+    const hasNumber = /[0-9]/;
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>_\-\\[\]/+=;]/;
+
+    return (
+        minLength.test(password) &&
+        hasUpper.test(password) &&
+        hasLower.test(password) &&
+        hasNumber.test(password) &&
+        hasSpecial.test(password)
+    );
+}
 
 app.set('view engine', 'html');
 
@@ -93,6 +108,10 @@ app.post('/verif_inscription', async (req, res) => {
 
     try {
         const { email, nom, prenom, pseudo, mot_de_passe } = req.body;
+        if (!isStrongPassword(mot_de_passe)) {
+    return res.redirect('/inscription?error=password');
+}
+
 
         if (!email || !nom || !prenom || !mot_de_passe || !pseudo) {
             return res.redirect('/inscription');
