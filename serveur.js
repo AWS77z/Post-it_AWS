@@ -38,20 +38,16 @@ app.use(bodyP.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'mon_secret_local',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        secure: true,
-        sameSite: 'none'
-    }
-}));
 nunjucks.configure(path.join(__dirname, 'views'), {
     autoescape: true,
     express: app
 });
 
+app.use(session({
+    secret: 'mon_secret',
+    resave: false,
+    saveUninitialized: false
+}));
 
 app.use((req, res, next) => {
     res.locals.user = req.session.user || null;
