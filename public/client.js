@@ -1,8 +1,4 @@
-const res = await fetch('/verif_admin');
-let etat = false;
-if (res.status === 200) {
-    etat = true;
-}
+
 
 
         
@@ -60,9 +56,11 @@ async function Sauvegarder(event) {
 
 
 
-
+let etat = false;
 window.addEventListener("DOMContentLoaded", async () => {
 
+    const resAdmin = await fetch('/verif_admin');
+    etat = resAdmin.status === 200;
     const res = await fetch('/afficher_postits_bd');
     const postits = await res.json();
 
