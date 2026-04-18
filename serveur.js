@@ -120,13 +120,16 @@ app.post('/verif_inscription', async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(mot_de_passe, 10);
 
-        const [id] = await knex('users').insert({
+        const result = await knex('users').insert({
             email: mail,
             nom: req.body.nom,
             prenom: req.body.prenom,
             pseudo: req.body.pseudo,
             password: hashedPassword
-        });
+        }).returning('id');
+
+
+const id = result[0]?.id || result[0];
 
         req.session.user = {
             pseudo: req.body.pseudo,
@@ -207,13 +210,17 @@ app.post('/sauvegarde_post-it', connecte, verif_permission('creer'), async (req,
         return res.redirect('/?error=9')
     }
     try {
-        const [id] = await knex('postits').insert({
-            contenu: contenu,
-            date: new Date(),
-            auteur: req.session.user.id,
-            position_x: x,
-            position_y: y,
-        });
+
+const result = await knex('postits')
+    .insert({
+        contenu: contenu,
+        date: new Date(),
+        auteur: req.session.user.id,
+        position_x: x,
+        position_y: y
+    })
+    .returning('id');
+    const id = result[0]?.id || result[0];
         const postit = {
             id,
             contenu: contenu,
