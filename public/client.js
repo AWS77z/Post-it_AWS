@@ -1,3 +1,14 @@
+const res = await fetch('/verif_admin');
+let etat = false;
+if (res.status === 200) {
+    etat = true;
+}
+
+
+        
+
+
+
 document.getElementById("main").addEventListener("dblclick", async function (event) {
     const x = event.clientX;
     const y = event.clientY;
@@ -189,7 +200,8 @@ function creer_post_it(p) {
     signature.textContent = "Le " + dateFr + " par " + p.auteur + ".";
     signature.style.marginTop = "5px";
 
-    if (window.user && window.user.pseudo === p.auteur) {
+
+        if (etat||(window.user && window.user.pseudo === p.auteur)) {
         console.log(window.user, p)
         console.log(p)
         div.appendChild(btn);

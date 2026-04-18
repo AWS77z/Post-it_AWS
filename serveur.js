@@ -220,6 +220,27 @@ app.get('/verif_connecte', (req, res) => {
     }
 });
 
+app.get('/verif_admin', async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.sendStatus(401);
+        }
+
+        const user = await knex('users')
+            .where({ id: req.session.user.id })
+            .first();
+
+        if (!user || !user.admin) {
+            return res.sendStatus(403);
+        }
+
+        return res.sendStatus(200);
+    } catch (err) {
+        console.error(err);
+        return res.sendStatus(500);
+    }
+});
+
 
 app.post('/sauvegarde_post-it', connecte, verif_permission('creer'), async (req, res) => {
 
