@@ -278,6 +278,10 @@ function rendreDraggable(element) {
             location.reload();
         }
     }
+
+
+}
+
     socket.on("postit_bouge", (data) => {
         const el = document.querySelector(`.post_it[data-id='${data.id}']`);
         if (el) {
@@ -286,8 +290,6 @@ function rendreDraggable(element) {
 
         }
     });
-
-}
 if (params.get("error") === "password") {
         alert("Mot de passe trop faible (8 caractères, majuscule, minuscule, chiffre, symbole requis)");
     }
