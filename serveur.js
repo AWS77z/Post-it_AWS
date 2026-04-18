@@ -9,26 +9,19 @@ const http = require("http");
 const { Server } = require("socket.io");
 
 
-let knexConfig;
-if (process.env.DATABASE_URL) {
-    knexConfig = {
-        client: 'pg',
-        connection: {
-            connectionString: process.env.DATABASE_URL,
-            ssl: { rejectUnauthorized: false }
+const knex = require('knex')({
+    client: 'pg',
+    connection: {
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+            rejectUnauthorized: false
         }
-    };
-} else {
-    knexConfig = {
-        client: 'sqlite3',
-        connection: { filename: "./db.sqlite3" },
-        useNullAsDefault: true,
-    };
-}
-const knex = require('knex')(knexConfig);
+    }
+});
+
 
 const app = express();
-app.set('trust proxy', 1);
+
 const server = http.createServer(app);
 const io = new Server(server);
 
@@ -43,10 +36,17 @@ nunjucks.configure(path.join(__dirname, 'views'), {
     express: app
 });
 
+
+app.set('trust proxy', 1);
 app.use(session({
     secret: 'mon_secret',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    proxy: true,
+    cookie: {
+        secure: true,
+        sameSite: 'none'
+    }
 }));
 
 app.use((req, res, next) => {

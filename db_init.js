@@ -1,20 +1,13 @@
-let knexConfig;
-if (process.env.DATABASE_URL) {
-    knexConfig = {
-        client: 'pg',
-        connection: {
-            connectionString: process.env.DATABASE_URL,
-            ssl: { rejectUnauthorized: false }
+const knex = require('knex')({
+    client: 'pg',
+    connection: {
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+            rejectUnauthorized: false
         }
-    };
-} else {
-    knexConfig = {
-        client: 'sqlite3',
-        connection: { filename: "./db.sqlite3" },
-        useNullAsDefault: true,
-    };
-}
-const knex = require('knex')(knexConfig);
+    }
+});
+
 
 async function initDB() {
     try {
